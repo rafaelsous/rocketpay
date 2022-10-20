@@ -5,6 +5,8 @@ import './css/index.css';
 const ccBgColor01 = document.querySelector('.cc-bg svg > g g:nth-child(1) path');
 const ccBgColor02 = document.querySelector('.cc-bg svg > g g:nth-child(2) path');
 const ccLogo = document.querySelector('.cc-logo span:nth-child(2) > img');
+const cardHolderInput = document.querySelector('#card-holder');
+const addButton = document.querySelector('#add-card');
 
 const securityCode = document.querySelector('#security-code');
 const securityCodeMask = {
@@ -59,7 +61,6 @@ const cardNumberMask = {
     return foundMask;
   }
 }
-
 const cardNumberMasked = IMask(cardNumber, cardNumberMask);
 
 function setCardType(type) {
@@ -72,6 +73,38 @@ function setCardType(type) {
   ccBgColor01.setAttribute('fill', colors[type][0]);
   ccBgColor02.setAttribute('fill', colors[type][1]);
   ccLogo.setAttribute('src', `cc-${type}.svg`);
+}
+
+addButton.addEventListener('click', (event) => {
+  event.preventDefault();
+  alert('Cartão adicionado para', ccHolderValue);
+});
+
+cardHolderInput.addEventListener('input', () => {
+  const ccHolderValue = document.querySelector('.cc-holder .value');
+  ccHolderValue.innerText = cardHolderInput.value ? cardHolderInput.value : 'FULANO DA SILVA';
+});
+
+securityCodeMasked.on('accept', () => updateSecurityCode(securityCodeMasked.value));
+function updateSecurityCode(code) {
+  const ccSecurityValue = document.querySelector('.cc-security .value');
+  ccSecurityValue.innerText = code ? code : '123';
+}
+
+cardNumberMasked.on('accept', () => {
+  const cardType = cardNumberMasked.masked.currentMask.cardType;
+  setCardType(cardType);
+  updateCardNumber(cardNumberMasked.value);
+});
+function updateCardNumber(cardNumber) {
+  const ccCarNumberValue = document.querySelector('.cc-number');
+  ccCarNumberValue.innerText = cardNumber ? cardNumber : '1234 5678 9012 3456';
+}
+
+expirationDateMasked.on('accept', () => updateExpirationDate(expirationDateMasked.value));
+function updateExpirationDate(expirationDate) {
+  const ccExpirationDateValue = document.querySelector('.cc-extra .value');
+  ccExpirationDateValue.innerText = expirationDate ? expirationDate : '02/32';
 }
 
 globalThis.setCardType = setCardType;
